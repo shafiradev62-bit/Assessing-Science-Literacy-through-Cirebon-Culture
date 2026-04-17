@@ -353,6 +353,9 @@ const Unit7Pisa = ({ onExit }: Unit7PisaProps) => {
           <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground border border-border/60 px-2 py-1 rounded">
             {stepLabels[currentStep]}
           </span>
+          <span className="text-[10px] font-bold uppercase tracking-widest text-amber-700 border border-amber-300 bg-amber-50 px-2 py-1 rounded">
+            {timer}
+          </span>
           <div className="w-px h-6 bg-border/60 mx-2" />
           <button
             onClick={() => {

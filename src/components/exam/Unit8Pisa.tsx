@@ -11,7 +11,7 @@ const Unit8Pisa = ({ onExit, studentId }: Unit8PisaProps) => {
   const { lang } = useLanguage();
   const isId = lang === "id";
   const [currentStep, setCurrentStep] = useState(0);
-  const [timer] = useState("20:00");
+  const [timer, setTimer] = useState("20:00");
   const [showWritingGuide, setShowWritingGuide] = useState(false);
   const [harvestRate, setHarvestRate] = useState(50);
   const [replanting, setReplanting] = useState(50);
@@ -25,6 +25,26 @@ const Unit8Pisa = ({ onExit, studentId }: Unit8PisaProps) => {
   const [q4Answer, setQ4Answer] = useState("");
   const [q5Answer, setQ5Answer] = useState("");
   const [sessionSaved, setSessionSaved] = useState(false);
+  const [videoWatched, setVideoWatched] = useState(false);
+
+  React.useEffect(() => {
+    let minutes = 20;
+    let seconds = 0;
+    const interval = setInterval(() => {
+      if (seconds === 0) {
+        if (minutes === 0) {
+          clearInterval(interval);
+          return;
+        }
+        minutes -= 1;
+        seconds = 59;
+      } else {
+        seconds -= 1;
+      }
+      setTimer(`${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const getWordCount = (text: string) => {
     if (!text) return 0;
@@ -140,6 +160,7 @@ const Unit8Pisa = ({ onExit, studentId }: Unit8PisaProps) => {
           </button>
           <div className="w-px h-6 bg-border/60 mx-2"/>
           <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground border border-border/60 px-2 py-1 rounded">{stepLabels[currentStep]}</span>
+          <span className="text-[10px] font-bold uppercase tracking-widest text-amber-700 border border-amber-300 bg-amber-50 px-2 py-1 rounded">{timer}</span>
           <div className="w-px h-6 bg-border/60 mx-2"/>
           <button onClick={handleExit} className="px-3 py-1.5 bg-background text-foreground text-[10px] font-bold rounded border border-border hover:bg-muted transition-colors uppercase tracking-wider">{isId?"Kembali":"Back"}</button>
         </div>
@@ -160,6 +181,22 @@ const Unit8Pisa = ({ onExit, studentId }: Unit8PisaProps) => {
                   <p>{isId?"Di Cirebon, rotan digunakan untuk membuat furnitur dan kerajinan tangan. Rotan merupakan hasil hutan bukan kayu, yang berarti diambil dari ekosistem hutan tanpa menebang pohon.":"In Cirebon, rattan is used to make furniture and handicrafts. Rattan is a non-timber forest product, which means it is taken from forest ecosystems without cutting down trees."}</p>
                   <p>{isId?"Para peneliti tertarik pada bagaimana rotan dapat dipanen dan digunakan secara berkelanjutan. Pemanenan rotan secara berkelanjutan dapat mendukung mata pencaharian lokal sekaligus membantu menjaga keanekaragaman hayati hutan dan keseimbangan ekologi.":"Researchers are interested in how rattan can be harvested and used in a sustainable way. Sustainable rattan harvesting can support local livelihoods while helping to maintain forest biodiversity and ecological balance."}</p>
                   <p>{isId?"Dalam penyelidikan ini, siswa memeriksa tiga faktor penting: tingkat panen, upaya penanaman kembali, dan pemanfaatan limbah.":"In this investigation, students examine three important factors: harvest rate, replanting effort, and waste utilization."}</p>
+                  <div className="rounded-xl overflow-hidden border border-border/40 bg-black/5">
+                    <video
+                      src="/videos/unit8-rattan.mp4"
+                      controls
+                      preload="metadata"
+                      playsInline
+                      className="w-full aspect-video"
+                      onEnded={() => setVideoWatched(true)}
+                    />
+                  </div>
+                  {videoWatched && (
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-100 text-emerald-700 rounded-full text-[11px] font-semibold w-fit">
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>
+                      {isId ? "Video selesai ditonton" : "Video watched"}
+                    </div>
+                  )}
                   <div className="bg-muted/40 border border-border p-4 rounded-lg flex items-start gap-4">
                     <div className="p-2 bg-primary/5 rounded text-primary shrink-0"></div>
                     <div>

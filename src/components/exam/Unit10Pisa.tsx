@@ -33,9 +33,10 @@ const Unit10Pisa = ({ onExit, studentId }: Unit10PisaProps) => {
   const { lang } = useLanguage();
   const isId = lang === "id";
   const [currentStep, setCurrentStep] = useState(0);
-  const [timer] = useState("20:00");
+  const [timer, setTimer] = useState("20:00");
   const [showWritingGuide, setShowWritingGuide] = useState(false);
   const [showWritingGuide5, setShowWritingGuide5] = useState(false);
+  const [videoWatched, setVideoWatched] = useState(false);
 
   const [protein, setProtein] = useState<ProteinSource>("Plant-based");
   const [distance, setDistance] = useState<IngredientDistance>("Local");
@@ -47,7 +48,7 @@ const Unit10Pisa = ({ onExit, studentId }: Unit10PisaProps) => {
   const [history, setHistory] = useState<Array<{id:number;protein:ProteinSource;distance:IngredientDistance;treatment:WasteTreatment;portion:PortionSize}&SimResult>>([]);
 
   const [q1Answers, setQ1Answers] = useState<Record<string,string>>({});
-  const [q2Answer, setQ2Answer] = useState("");
+  const [q2Choice, setQ2Choice] = useState("");
   const [q3Choice, setQ3Choice] = useState("");
   const [q4Answer, setQ4Answer] = useState("");
   const [q5Answer, setQ5Answer] = useState("");
@@ -57,13 +58,15 @@ const Unit10Pisa = ({ onExit, studentId }: Unit10PisaProps) => {
     return text.trim().split(/\s+/).filter(w => w.length > 0).length;
   };
 
+  const isQ1Correct = () =>
+    q1Answers.tofu === "input" &&
+    q1Answers.sauce === "prep" &&
+    q1Answers.waste === "treat";
+
   const isStepValid = () => {
     if (currentStep === 0) return true;
-    if (currentStep === 1) return Object.keys(q1Answers).length >= 3;
-    if (currentStep === 2) {
-      const count = getWordCount(q2Answer);
-      return count >= 15 ;
-    }
+    if (currentStep === 1) return isQ1Correct();
+    if (currentStep === 2) return !!q2Choice;
     if (currentStep === 3) return !!q3Choice;
     if (currentStep === 4) {
       const count = getWordCount(q4Answer);
@@ -101,6 +104,25 @@ const Unit10Pisa = ({ onExit, studentId }: Unit10PisaProps) => {
     create();
   }, []);
 
+  useEffect(() => {
+    let minutes = 20;
+    let seconds = 0;
+    const interval = setInterval(() => {
+      if (seconds === 0) {
+        if (minutes === 0) {
+          clearInterval(interval);
+          return;
+        }
+        minutes -= 1;
+        seconds = 59;
+      } else {
+        seconds -= 1;
+      }
+      setTimer(`${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   // Auto-save answers every time they change
   useEffect(() => {
     if (!sessionIdRef.current) return;
@@ -108,7 +130,7 @@ const Unit10Pisa = ({ onExit, studentId }: Unit10PisaProps) => {
       try {
         const answers = {
           q1Answers,
-          q2Answer,
+          q2Choice,
           q3Choice,
           q4Answer,
           q5Answer,
@@ -123,7 +145,7 @@ const Unit10Pisa = ({ onExit, studentId }: Unit10PisaProps) => {
     };
     const timer = setTimeout(save, 800);
     return () => clearTimeout(timer);
-  }, [q1Answers, q2Answer, q3Choice, q4Answer, q5Answer, currentStep, history]);
+  }, [q1Answers, q2Choice, q3Choice, q4Answer, q5Answer, currentStep, history]);
 
   // Helper to get dropped item name
   const getDroppedItemName = (key: string) => {
@@ -513,6 +535,7 @@ const Unit10Pisa = ({ onExit, studentId }: Unit10PisaProps) => {
           </button>
           <div className="w-px h-6 bg-border/60 mx-2" />
           <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground border border-border/60 px-2 py-1 rounded">{stepLabels[currentStep]}</span>
+          <span className="text-[10px] font-bold uppercase tracking-widest text-amber-700 border border-amber-300 bg-amber-50 px-2 py-1 rounded">{timer}</span>
           <div className="w-px h-6 bg-border/60 mx-2" />
           <button onClick={onExit} className="px-3 py-1.5 bg-background text-foreground text-[10px] font-bold rounded border border-border hover:bg-muted transition-colors uppercase tracking-wider">
             {isId ? "Kembali" : "Back"}
@@ -545,6 +568,22 @@ const Unit10Pisa = ({ onExit, studentId }: Unit10PisaProps) => {
                   <p>{isId
                     ? "Namun, produksi tahu tetap dapat berdampak pada lingkungan. Proses pembuatan tahu menggunakan banyak air dan menghasilkan limbah cair yang kaya akan bahan organik. Jika limbah ini dibuang tanpa pengolahan, dapat meningkatkan BOD dan COD serta mencemari perairan."
                     : "However, tofu production can still affect the environment. Tofu processing uses large amounts of water and produces liquid waste rich in organic matter. If this waste is released without treatment, it can increase BOD and COD and pollute waterways."}</p>
+                  <div className="rounded-xl overflow-hidden border border-border/40 bg-black/5">
+                    <video
+                      src="/videos/unit10-tahu-gejrot.mp4"
+                      controls
+                      preload="metadata"
+                      playsInline
+                      className="w-full aspect-video"
+                      onEnded={() => setVideoWatched(true)}
+                    />
+                  </div>
+                  {videoWatched && (
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-100 text-emerald-700 rounded-full text-[11px] font-semibold w-fit">
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>
+                      {isId ? "Video selesai ditonton" : "Video watched"}
+                    </div>
+                  )}
                   <div className="bg-muted/40 border border-border p-4 rounded-lg flex items-start gap-4">
                     <div className="p-2 bg-primary/5 rounded text-primary shrink-0">
                     </div>
@@ -626,6 +665,18 @@ const Unit10Pisa = ({ onExit, studentId }: Unit10PisaProps) => {
                   ? "Seret setiap item berikut ke bagian sistem pangan yang sesuai. Pilih bagian yang paling tepat untuk setiap item."
                   : "Drag each item below to the correct part of the food system. Select the most appropriate part for each item."}</p>
                 <div className="space-y-3">
+                  {draggedItem && (
+                    <p className="text-[11px] font-semibold text-primary">
+                      {isId ? `Sedang diseret: ${getDroppedItemName(draggedItem)}` : `Dragging: ${getDroppedItemName(draggedItem)}`}
+                    </p>
+                  )}
+                  {Object.keys(q1Answers).length >= 3 && (
+                    <p className={`text-[11px] font-semibold ${isQ1Correct() ? "text-emerald-600" : "text-rose-600"}`}>
+                      {isQ1Correct()
+                        ? (isId ? "Semua pasangan benar." : "All matches are correct.")
+                        : (isId ? "Masih ada pasangan yang salah. Cek lagi mapping input–proses–pengolahan." : "Some matches are incorrect. Recheck input–process–treatment mapping.")}
+                    </p>
+                  )}
                   <div className="flex flex-wrap gap-2">
                     {[
                       {key:"tofu",    en:"Tofu (plant protein)",          id:"Tahu (protein nabati)"},
@@ -661,13 +712,22 @@ const Unit10Pisa = ({ onExit, studentId }: Unit10PisaProps) => {
                   <h2 className="text-base font-bold text-foreground">{isId ? "Soal 2 / 5" : "Question 2 / 5"}</h2>
                 </div>
                 <p className="text-[13px] font-medium text-foreground/90 leading-relaxed whitespace-pre-line">{isId
-                  ? "Seorang penjual tahu gejrot berpendapat bahwa selama mereka menggunakan tahu sebagai bahan utama, hidangan mereka akan selalu memiliki dampak lingkungan yang rendah. Mengapa pendapat ini tidak sepenuhnya benar?"
-                  : "A tahu gejrot seller thinks that as long as they use tofu as the main ingredient, their dish will always have a low environmental impact. Why is this opinion not entirely correct?"}</p>
-                <WritingGuideBtn text={isId ? "Jawaban yang kuat menjelaskan bahwa dampak lingkungan juga dipengaruhi oleh asal bahan (lokal vs luar daerah), penggunaan air dalam pengolahannya, dan bagaimana limbah sisa dikelola." : "A strong answer explains that environmental impact is also influenced by where ingredients come from (local vs non-local), water use in processing, and how waste materials are managed."} open={showWritingGuide} setOpen={setShowWritingGuide} />
-                <textarea value={q2Answer} onChange={e => setQ2Answer(e.target.value)} className="w-full h-32 p-3 bg-muted/10 border border-border rounded-lg text-[13px] focus:ring-1 focus:ring-primary outline-none transition-all resize-none" placeholder={isId ? "Ketik jawabanmu di sini..." : "Type your answer here..."} />
-                <p className={`text-[10px] font-bold text-right ${getWordCount(q2Answer) >= 15 ? "text-green-600" : "text-amber-600"}`}>
-                  {getWordCount(q2Answer)} {isId ? "kata (Minimal 15)" : "words (Min. 15)"}
-                </p>
+                  ? "Cara manakah yang paling efektif untuk mengurangi pencemaran limbah tahu?"
+                  : "Which method is most effective to reduce tofu wastewater pollution?"}</p>
+                <div className="space-y-2.5">
+                  {[
+                    { val: "A", id: "Membuang limbah cair langsung ke sungai", en: "Discharge wastewater directly to the river" },
+                    { val: "B", id: "Menambah volume air agar limbah terlihat encer", en: "Add more water so waste looks diluted" },
+                    { val: "C", id: "Mengolah limbah cair tahu sebelum dibuang", en: "Treat tofu wastewater before disposal" },
+                    { val: "D", id: "Membuang limbah hanya pada malam hari", en: "Dispose waste only at night" },
+                  ].map((opt) => (
+                    <label key={opt.val} className="flex items-center gap-3 p-3.5 bg-white border border-border rounded-lg hover:border-primary/20 hover:bg-muted/10 cursor-pointer transition-all">
+                      <input type="radio" name="q2-choice" className="w-4 h-4 accent-primary" checked={q2Choice === opt.val} onChange={() => setQ2Choice(opt.val)} />
+                      <span className="text-[13px] font-bold text-muted-foreground w-5">{opt.val}</span>
+                      <span className="text-[13px] text-foreground/70">{isId ? opt.id : opt.en}</span>
+                    </label>
+                  ))}
+                </div>
               </div>
             )}
 

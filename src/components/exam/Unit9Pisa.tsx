@@ -41,8 +41,9 @@ const Unit9Pisa = ({ onExit, studentId }: Unit9PisaProps) => {
   const { lang } = useLanguage();
   const isId = lang === "id";
   const [currentStep, setCurrentStep] = useState(0);
-  const [timer] = useState("20:00");
+  const [timer, setTimer] = useState("20:00");
   const [showWritingGuide, setShowWritingGuide] = useState(false);
+  const [videoWatched, setVideoWatched] = useState(false);
 
   // Controls
   const [dyeType,   setDyeType]   = useState<DyeType>("Synthetic");
@@ -66,6 +67,25 @@ const Unit9Pisa = ({ onExit, studentId }: Unit9PisaProps) => {
     if (!text) return 0;
     return text.trim().split(/\s+/).filter(w => w.length > 0).length;
   };
+
+  useEffect(() => {
+    let minutes = 20;
+    let seconds = 0;
+    const interval = setInterval(() => {
+      if (seconds === 0) {
+        if (minutes === 0) {
+          clearInterval(interval);
+          return;
+        }
+        minutes -= 1;
+        seconds = 59;
+      } else {
+        seconds -= 1;
+      }
+      setTimer(`${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const isStepValid = () => {
     if (currentStep === 0) return true;
@@ -202,6 +222,7 @@ const Unit9Pisa = ({ onExit, studentId }: Unit9PisaProps) => {
           </button>
           <div className="w-px h-6 bg-border/60 mx-2" />
           <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground border border-border/60 px-2 py-1 rounded">{stepLabels[currentStep]}</span>
+          <span className="text-[10px] font-bold uppercase tracking-widest text-amber-700 border border-amber-300 bg-amber-50 px-2 py-1 rounded">{timer}</span>
           <div className="w-px h-6 bg-border/60 mx-2" />
           <button onClick={() => {
             // Validate before submission
@@ -262,6 +283,22 @@ const Unit9Pisa = ({ onExit, studentId }: Unit9PisaProps) => {
                   <p>{isId
                     ? "Jika limbah cair dibuang tanpa pengolahan yang tepat, dapat mengurangi kualitas air dan merusak ekosistem perairan. Dalam penyelidikan ini, siswa memeriksa tiga faktor penting: jenis pewarna, penggunaan air, dan pengolahan limbah."
                     : "If wastewater is released without proper treatment, it can reduce water quality and harm aquatic ecosystems. In this investigation, students examine three important factors: dye type, water use, and waste treatment."}</p>
+                  <div className="rounded-xl overflow-hidden border border-border/40 bg-black/5">
+                    <video
+                      src="/videos/unit9-batik.mp4"
+                      controls
+                      preload="metadata"
+                      playsInline
+                      className="w-full aspect-video"
+                      onEnded={() => setVideoWatched(true)}
+                    />
+                  </div>
+                  {videoWatched && (
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-100 text-emerald-700 rounded-full text-[11px] font-semibold w-fit">
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>
+                      {isId ? "Video selesai ditonton" : "Video watched"}
+                    </div>
+                  )}
                   <div className="bg-muted/40 border border-border p-4 rounded-lg flex items-start gap-4">
                     <div className="p-2 bg-primary/5 rounded text-primary shrink-0">
                     </div>
@@ -459,6 +496,24 @@ const Unit9Pisa = ({ onExit, studentId }: Unit9PisaProps) => {
                 <p className={`text-[10px] font-bold text-right ${getWordCount(q5Answer) >= 15  ? "text-green-600" : "text-amber-600"}`}>
                   {getWordCount(q5Answer)} {isId ? "kata (Minimal 15)" : "words (Min. 15)"}
                 </p>
+                <button
+                  onClick={() => {
+                    if (!isStepValid()) return;
+                    const score = [
+                      Object.keys(q1Answers).length >= 4,
+                      q2Answer.trim().length > 0,
+                      q3Choice.trim().length > 0,
+                      q4Answer.trim().length > 0,
+                      q5Answer.trim().length > 0
+                    ].filter(Boolean).length;
+                    saveCompletedSession(9, { q1Answers, q2Answer, q3Choice, q4Answer, q5Answer, history }, score, 5);
+                    onExit?.();
+                  }}
+                  disabled={!isStepValid()}
+                  className="w-full py-3 bg-emerald-600 text-white text-[12px] font-bold rounded-lg border border-emerald-700 hover:bg-emerald-700 transition-colors disabled:opacity-50"
+                >
+                  {isId ? "KIRIM JAWABAN UNIT 9" : "SUBMIT UNIT 9 ANSWERS"}
+                </button>
               </div>
             )}
 
@@ -847,6 +902,11 @@ const Unit9Pisa = ({ onExit, studentId }: Unit9PisaProps) => {
                   );
                 })()}
               </div>
+              <p className="text-[11px] text-slate-500 leading-relaxed">
+                {isId
+                  ? "Kelayakan produksi mengacu pada kemudahan proses produksi (biaya, kecepatan, dan operasional), bukan kualitas air."
+                  : "Production feasibility refers to practicality of production (cost, speed, and operations), not water quality."}
+              </p>
 
               {!simRan&&<p className="text-[10px] text-slate-400 text-center italic pt-1">{isId?"Klik 'Jalankan Simulasi' untuk melihat hasil.":"Click 'Run Simulation' to see results."}</p>}
             </div>

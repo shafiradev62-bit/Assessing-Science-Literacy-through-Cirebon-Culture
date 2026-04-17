@@ -185,12 +185,20 @@ const QuestionPanel = ({
   };
 
   const options = getOptions();
+  const checkboxShouldBeSingle =
+    question.type === "checkbox" &&
+    (typeof question.correct === "string" ||
+      (Array.isArray(question.correct) && question.correct.length <= 1));
 
   const handleMCQ = (option: string) => {
     onAnswer(question.id, option);
   };
 
   const handleCheckbox = (option: string) => {
+    if (checkboxShouldBeSingle) {
+      onAnswer(question.id, [option]);
+      return;
+    }
     const updated = selectedCheckbox.includes(option)
       ? selectedCheckbox.filter((o) => o !== option)
       : [...selectedCheckbox, option];
@@ -519,7 +527,7 @@ const QuestionPanel = ({
                       }`}
                     >
                       <span
-                        className={`flex-shrink-0 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all duration-200 ${
+                        className={`flex-shrink-0 w-6 h-6 ${checkboxShouldBeSingle ? "rounded-full" : "rounded-md"} border-2 flex items-center justify-center transition-all duration-200 ${
                           isSelected
                             ? "bg-primary border-primary"
                             : "border-muted-foreground/30 group-hover:border-primary/50"
@@ -561,7 +569,7 @@ const QuestionPanel = ({
                       {tooLong && <span className="ml-1">({t("max. 50", "maks. 50")})</span>}
                     </span>
                     <span className="text-[10px] text-muted-foreground/60">
-                      {t("15â€“50 words", "15â€“50 kata")}
+                      {t("min. 15 words", "minimal 15 kata")}
                     </span>
                   </div>
                   {tooShort && (
