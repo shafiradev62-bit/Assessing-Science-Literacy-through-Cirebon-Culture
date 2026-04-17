@@ -465,200 +465,418 @@ const Unit9Pisa = ({ onExit, studentId }: Unit9PisaProps) => {
           </div>
         </div>
 
-        {/* ── RIGHT: Simulation ── */}
-        <div className="flex-1 bg-muted/20 flex flex-col overflow-hidden">
-          <div className="p-6 h-full flex flex-col gap-5 overflow-y-auto exam-scrollbar">
+        {/* -- RIGHT: Simulation -- */}
+        <div className="flex-1 bg-gradient-to-b from-slate-50 to-white flex flex-col overflow-hidden">
+          <div className="p-5 h-full flex flex-col gap-4 overflow-y-auto exam-scrollbar">
 
-            <div className="flex items-center justify-between border-b border-border/60 pb-3">
-              <div className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-primary/40" />
-                <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                  {isId ? "Simulasi Produksi Batik" : "Batik Production Simulation"}
-                </h3>
-              </div>
+            {/* Header */}
+            <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
+              <span className="w-2 h-2 rounded-full bg-primary animate-pulse"/>
+              <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                {isId ? "Simulasi Produksi Batik" : "Batik Production Simulation"}
+              </h3>
             </div>
-            {/* ── CONTROLS ── */}
-            <div className="bg-white p-5 rounded-2xl border border-border/50 shadow-sm space-y-4">
-              <div className="space-y-4">
-                {/* Dye Type */}
-                <div className="space-y-2">
-                  <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest block">{isId?"Jenis Pewarna":"Dye Type"}</label>
-                  <div className="flex gap-2">
-                    {(["Synthetic", "Natural"] as DyeType[]).map(v => (
-                      <button key={v} onClick={() => { setDyeType(v); setSimRan(false); }}
-                        className={`flex-1 py-2 text-[11px] font-bold rounded-xl transition-all ${dyeType===v ? "bg-primary text-white shadow-md shadow-primary/20 scale-[1.02]" : "bg-muted/40 text-muted-foreground hover:bg-muted"}`}>
-                        {v === "Synthetic" ? (isId ? "Sintetis" : "Synthetic") : (isId ? "Alami" : "Natural")}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                {/* Water Use */}
-                <div className="space-y-2">
-                  <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest block">{isId?"Penggunaan Air":"Water Use"}</label>
-                  <div className="flex gap-2">
-                    {(["Low", "Medium", "High"] as WaterLevel[]).map(v => (
-                      <button key={v} onClick={() => { setWaterUse(v); setSimRan(false); }}
-                        className={`flex-1 py-1.5 text-[11px] font-bold rounded-xl transition-all ${waterUse===v ? "bg-primary text-white shadow-md shadow-primary/20 scale-[1.02]" : "bg-muted/40 text-muted-foreground hover:bg-muted"}`}>
-                        {v === "Low" ? (isId ? "Rendah" : "Low") : v === "Medium" ? (isId ? "Sedang" : "Medium") : (isId ? "Tinggi" : "High")}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                {/* Waste Treatment */}
-                <div className="space-y-2">
-                  <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest block">{isId?"Pengolahan Limbah":"Waste Treatment"}</label>
-                  <div className="flex gap-2">
-                    {(["None", "Partial", "Full"] as TreatmentLevel[]).map(v => (
-                      <button key={v} onClick={() => { setTreatment(v); setSimRan(false); }}
-                        className={`flex-1 py-1.5 text-[11px] font-bold rounded-xl transition-all ${treatment===v ? "bg-primary text-white shadow-md shadow-primary/20 scale-[1.02]" : "bg-muted/40 text-muted-foreground hover:bg-muted"}`}>
-                        {v === "None" ? (isId ? "Tidak Ada" : "None") : v === "Partial" ? (isId ? "Sebagian" : "Partial") : (isId ? "Penuh" : "Full")}
-                      </button>
-                    ))}
-                  </div>
+
+            {/* -- CONTROLS -- */}
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 space-y-3">
+              {/* Dye Type */}
+              <div className="space-y-1.5">
+                <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">{isId?"Jenis Pewarna":"Dye Type"}</p>
+                <div className="flex gap-2">
+                  {(["Synthetic","Natural"] as DyeType[]).map(v=>(
+                    <button key={v} onClick={()=>{setDyeType(v);setSimRan(false);}}
+                      className={`flex-1 py-2 text-[11px] font-bold rounded-xl transition-all duration-200 ${dyeType===v?"bg-primary text-white shadow-md scale-[1.02]":"bg-slate-100 text-slate-500 hover:bg-slate-200"}`}>
+                      {v==="Synthetic"?(isId?"Sintetis":"Synthetic"):(isId?"Alami":"Natural")}
+                    </button>
+                  ))}
                 </div>
               </div>
+              {/* Water Use */}
+              <div className="space-y-1.5">
+                <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">{isId?"Penggunaan Air":"Water Use"}</p>
+                <div className="flex gap-2">
+                  {(["Low","Medium","High"] as WaterLevel[]).map(v=>(
+                    <button key={v} onClick={()=>{setWaterUse(v);setSimRan(false);}}
+                      className={`flex-1 py-2 text-[11px] font-bold rounded-xl transition-all duration-200 ${waterUse===v?"bg-primary text-white shadow-md scale-[1.02]":"bg-slate-100 text-slate-500 hover:bg-slate-200"}`}>
+                      {v==="Low"?(isId?"Rendah":"Low"):v==="Medium"?(isId?"Sedang":"Medium"):(isId?"Tinggi":"High")}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              {/* Waste Treatment */}
+              <div className="space-y-1.5">
+                <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">{isId?"Pengolahan Limbah":"Waste Treatment"}</p>
+                <div className="flex gap-2">
+                  {(["None","Partial","Full"] as TreatmentLevel[]).map(v=>(
+                    <button key={v} onClick={()=>{setTreatment(v);setSimRan(false);}}
+                      className={`flex-1 py-2 text-[11px] font-bold rounded-xl transition-all duration-200 ${treatment===v?"bg-primary text-white shadow-md scale-[1.02]":"bg-slate-100 text-slate-500 hover:bg-slate-200"}`}>
+                      {v==="None"?(isId?"Tidak Ada":"None"):v==="Partial"?(isId?"Sebagian":"Partial"):(isId?"Penuh":"Full")}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              {/* Buttons */}
               <div className="flex gap-2 pt-1">
                 <button onClick={runSimulation}
-                  className="flex-1 py-3 bg-green-700 hover:bg-green-600 text-white text-[13px] font-black rounded-xl transition-all shadow-md active:scale-95">
-                  {isId ? "JALANKAN SIMULASI" : "RUN SIMULATION"}
+                  className="flex-1 py-2.5 bg-primary hover:bg-primary/90 text-white text-[12px] font-black rounded-xl transition-all shadow-md active:scale-95 tracking-wide">
+                  {isId?"JALANKAN SIMULASI":"RUN SIMULATION"}
                 </button>
                 <button onClick={handleRecord} disabled={!simRan}
-                  className="px-6 py-3 bg-white text-gray-700 text-[13px] font-bold rounded-xl border-2 border-border/60 hover:bg-muted transition-all disabled:opacity-40">
-                  {isId ? "CATAT" : "RECORD"}
+                  className="px-5 py-2.5 bg-white text-slate-600 text-[11px] font-bold rounded-xl border-2 border-slate-200 hover:bg-slate-50 transition-all disabled:opacity-30">
+                  {isId?"CATAT":"RECORD"}
                 </button>
               </div>
             </div>
 
-            {/* ── HIGH-FIDELITY SVG WASTEWATER SIMULATION ── */}
-            <div className="bg-white p-6 rounded-2xl border border-border/50 shadow-sm relative overflow-hidden group">
-              <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60 mb-4 flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-                {isId ? "DIAGRAM ALIRAN LIMBAH" : "WASTEWATER FLOW DIAGRAM"}
+            {/* -- VISUAL SIMULATION SCENE -- */}
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 space-y-3">
+              <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
+                <span className={`w-1.5 h-1.5 rounded-full ${simRan?"bg-emerald-400 animate-pulse":"bg-slate-300"}`}/>
+                {isId?"Kondisi Lingkungan":"Environmental Condition"}
               </p>
-              <svg viewBox="0 0 340 120" className="w-full drop-shadow-sm" aria-label={isId?"Diagram aliran limbah cair":"Wastewater flow diagram"}>
+
+              {/* RIVER SCENE SVG */}
+              <svg viewBox="0 0 400 160" className="w-full rounded-xl" xmlns="http://www.w3.org/2000/svg">
                 <defs>
-                   <pattern id="batikPattern" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
-                      <circle cx="5" cy="5" r="2" fill="#94a3b8" opacity="0.4" />
-                      <path d="M0,0 L10,10 M10,0 L0,10" stroke="#94a3b8" strokeWidth="0.5" opacity="0.3" />
-                   </pattern>
-                   <linearGradient id="dyeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                      <stop offset="0%" stopColor={dyeType === "Synthetic" ? "#3b82f6" : "#713f12"} />
-                      <stop offset="100%" stopColor={dyeType === "Synthetic" ? "#1e40af" : "#451a03"} />
-                   </linearGradient>
-                   <linearGradient id="riverGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor={outputs.waterQuality === "Good" ? "#0ea5e9" : outputs.waterQuality === "Medium" ? "#64748b" : "#475569"} />
-                      <stop offset="100%" stopColor={outputs.waterQuality === "Good" ? "#38bdf8" : outputs.waterQuality === "Medium" ? "#94a3b8" : "#64748b"} />
-                   </linearGradient>
-                   <filter id="premium-glow" x="-20%" y="-20%" width="140%" height="140%">
-                      <feGaussianBlur in="SourceAlpha" stdDeviation="1.5" />
-                      <feOffset dx="0.5" dy="1" result="offsetblur" />
-                      <feComponentTransfer><feFuncA type="linear" slope="0.2"/></feComponentTransfer>
-                      <feMerge><feMergeNode /><feMergeNode in="SourceGraphic" /></feMerge>
-                   </filter>
+                  <linearGradient id="u9sky" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor={outputs.waterQuality==="Good"?"#0ea5e9":outputs.waterQuality==="Poor"?"#64748b":"#38bdf8"}/>
+                    <stop offset="100%" stopColor={outputs.waterQuality==="Good"?"#7dd3fc":outputs.waterQuality==="Poor"?"#e2e8f0":"#bfdbfe"}/>
+                  </linearGradient>
+                  <linearGradient id="u9river" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor={outputs.waterQuality==="Good"?"#38bdf8":outputs.waterQuality==="Poor"?"#334155":"#64748b"}/>
+                    <stop offset="50%" stopColor={outputs.waterQuality==="Good"?"#0284c7":outputs.waterQuality==="Poor"?"#1e293b":"#475569"}/>
+                    <stop offset="100%" stopColor={outputs.waterQuality==="Good"?"#0369a1":outputs.waterQuality==="Poor"?"#0f172a":"#334155"}/>
+                  </linearGradient>
+                  <linearGradient id="u9wall" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stopColor="#e2e8f0"/>
+                    <stop offset="100%" stopColor="#64748b"/>
+                  </linearGradient>
+                  <linearGradient id="u9roof" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#475569"/>
+                    <stop offset="100%" stopColor="#1e293b"/>
+                  </linearGradient>
+                  <linearGradient id="u9ground" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor={outputs.ecosystemRisk==="High"?"#d97706":"#4ade80"}/>
+                    <stop offset="100%" stopColor={outputs.ecosystemRisk==="High"?"#92400e":"#16a34a"}/>
+                  </linearGradient>
+                  <linearGradient id="u9ipal" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#bbf7d0"/>
+                    <stop offset="100%" stopColor="#4ade80"/>
+                  </linearGradient>
+                  <radialGradient id="u9sun" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stopColor="#fef08a" stopOpacity="1"/>
+                    <stop offset="50%" stopColor="#fbbf24" stopOpacity="0.8"/>
+                    <stop offset="100%" stopColor="#f59e0b" stopOpacity="0"/>
+                  </radialGradient>
+                  <linearGradient id="u9shimmer" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stopColor="white" stopOpacity="0"/>
+                    <stop offset="45%" stopColor="white" stopOpacity="0.15"/>
+                    <stop offset="100%" stopColor="white" stopOpacity="0"/>
+                  </linearGradient>
+                  <filter id="u9blur"><feGaussianBlur stdDeviation="3"/></filter>
+                  <filter id="u9shadow"><feDropShadow dx="1" dy="2" stdDeviation="2.5" floodColor="#0f172a" floodOpacity="0.2"/></filter>
+                  <filter id="u9haze"><feGaussianBlur stdDeviation="1"/></filter>
                 </defs>
 
-                {/* Production Site (Batik Workshop) */}
-                <g transform="translate(10, 30)" filter="url(#premium-glow)">
-                  <rect width="60" height="60" rx="10" fill="#f8fafc" stroke="#e2e8f0" strokeWidth="1.5"/>
-                  <rect width="60" height="60" rx="10" fill="url(#batikPattern)" />
-                  <path d="M15,45 L15,25 L30,15 L45,25 L45,45 Z" fill="#cbd5e1"/>
-                  <path d="M15,25 L30,15 L45,25" fill="#94a3b8" />
-                  <rect x="25" y="32" width="10" height="13" fill="#64748b"/>
-                  <text x="30" y="54" textAnchor="middle" fontSize="6.5" fontWeight="bold" fill="#475569">{isId?"Batik Workshop":"Workshop"}</text>
+                {/* SKY */}
+                <rect width="400" height="108" fill="url(#u9sky)"/>
+                <rect width="400" height="108" fill="white" opacity="0.03"/>
+                {/* Sun */}
+                {outputs.waterQuality==="Good" && <g transform="translate(358,24)">
+                  <circle r="24" fill="url(#u9sun)" opacity="0.7"/>
+                  <circle r="12" fill="#fde68a" opacity="0.95"/>
+                  <circle r="9" fill="#fbbf24"/>
+                  <g style={{animation:"u9-sun-spin 12s linear infinite", transformOrigin:"358px 24px"}}>
+                    {[0,30,60,90,120,150,180,210,240,270,300,330].map((a,i)=>(
+                      <line key={i} x1={13*Math.cos(a*Math.PI/180)} y1={13*Math.sin(a*Math.PI/180)} x2={19*Math.cos(a*Math.PI/180)} y2={19*Math.sin(a*Math.PI/180)} stroke="#fde68a" strokeWidth={i%2===0?"2":"1.2"} strokeLinecap="round" opacity="0.85"/>
+                    ))}
+                  </g>
+                </g>}
+                {/* Storm clouds */}
+                {outputs.waterQuality==="Poor" && <g filter="url(#u9haze)">
+                  <ellipse cx="68" cy="20" rx="34" ry="13" fill="#64748b" opacity="0.72"/>
+                  <ellipse cx="92" cy="14" rx="24" ry="11" fill="#64748b" opacity="0.62"/>
+                  <ellipse cx="46" cy="18" rx="19" ry="10" fill="#64748b" opacity="0.52"/>
+                  <ellipse cx="218" cy="22" rx="27" ry="11" fill="#64748b" opacity="0.58"/>
+                  <ellipse cx="242" cy="15" rx="19" ry="9" fill="#64748b" opacity="0.48"/>
+                  <ellipse cx="338" cy="18" rx="21" ry="9" fill="#64748b" opacity="0.44"/>
+                </g>}
+                {/* Medium clouds */}
+                {outputs.waterQuality==="Medium" && <g filter="url(#u9haze)" opacity="0.45">
+                  <ellipse cx="158" cy="18" rx="21" ry="8" fill="#94a3b8"/>
+                  <ellipse cx="176" cy="12" rx="15" ry="7" fill="#94a3b8"/>
+                </g>}
+                {/* Ground */}
+                <rect x="0" y="100" width="400" height="14" fill="url(#u9ground)" opacity="0.88"/>
+                <rect x="0" y="100" width="400" height="2" fill="#0f172a" opacity="0.07"/>
+                {/* Grass tufts */}
+                {outputs.ecosystemRisk!=="High" && [252,270,282,297,314,330,347,362,380].map((x,i)=>(
+                  <g key={x} transform={`translate(${x},100)`}>
+                    <path d={`M0,0 Q-3,-${5+i%3},-1,-${8+i%4}`} stroke="#4ade80" strokeWidth="1.2" fill="none" opacity="0.8"/>
+                    <path d={`M0,0 Q2,-${6+i%2},1,-${9+i%3}`} stroke="#22c55e" strokeWidth="1.2" fill="none" opacity="0.7"/>
+                    <path d={`M0,0 Q4,-${4+i%3},3,-${7+i%2}`} stroke="#4ade80" strokeWidth="1" fill="none" opacity="0.6"/>
+                  </g>
+                ))}
+
+                {/* BG trees (hazy) */}
+                <g opacity="0.3" filter="url(#u9haze)">
+                  {[312,332,352,372,392].map((x,i)=>{
+                    const h=[18,22,16,20,15][i];
+                    const lf=outputs.ecosystemRisk==="High"?"#78350f":"#166534";
+                    return <g key={x}><rect x={x+2} y={100-h} width="4" height={h} fill="#4b5563"/><ellipse cx={x+4} cy={100-h-8} rx={[9,11,8,10,8][i]} ry={[11,13,9,12,10][i]} fill={lf}/></g>;
+                  })}
                 </g>
+                {/* Foreground trees */}
+                {([
+                  {x:266,h:40,r1:16,r2:11},
+                  {x:290,h:32,r1:13,r2:9},
+                  {x:314,h:38,r1:15,r2:10},
+                  {x:338,h:28,r1:12,r2:8},
+                ] as {x:number,h:number,r1:number,r2:number}[]).map((t,i)=>{
+                  const ok=outputs.ecosystemRisk!=="High";
+                  const c1=ok?["#15803d","#16a34a","#22c55e","#4ade80"][i]:["#b45309","#d97706","#b45309","#d97706"][i];
+                  const c2=ok?["#166534","#15803d","#16a34a","#22c55e"][i]:["#92400e","#b45309","#92400e","#b45309"][i];
+                  return <g key={i} filter="url(#u9shadow)">
+                    <rect x={t.x+2} y={100-t.h} width="5" height={t.h} rx="2.5" fill={ok?"#92400e":"#78350f"}/>
+                    <rect x={t.x+5} y={100-t.h} width="2" height={t.h} rx="1" fill="#0f172a" opacity="0.12"/>
+                    <ellipse cx={t.x+4} cy={100-t.h-6} rx={t.r1} ry={t.r1*0.9} fill={c1} opacity={ok?0.92:0.55}/>
+                    <ellipse cx={t.x+5} cy={100-t.h-15} rx={t.r2} ry={t.r2*1.1} fill={c2} opacity={ok?0.85:0.45}/>
+                    <ellipse cx={t.x+7} cy={100-t.h-17} rx={t.r2*0.5} ry={t.r2*0.4} fill="white" opacity={ok?0.12:0.04}/>
+                    {!ok && <>
+                      <line x1={t.x+4} y1={100-t.h+5} x2={t.x-6} y2={100-t.h-4} stroke="#78350f" strokeWidth="1.5" opacity="0.7"/>
+                      <line x1={t.x+4} y1={100-t.h+8} x2={t.x+14} y2={100-t.h} stroke="#78350f" strokeWidth="1.2" opacity="0.6"/>
+                    </>}
+                  </g>;
+                })}
 
-                {/* Dye Tank (Realistic Basin) */}
-                <g transform="translate(95, 40)" filter="url(#premium-glow)">
-                   <path d="M0,0 L50,0 Q55,0 55,5 L55,30 Q55,35 50,35 L0,35 Q-5,35 -5,30 L-5,5 Q-5,0 0,0" fill="#f1f5f9" stroke="#cbd5e1" strokeWidth="1.5"/>
-                   <rect x="2" y={waterUse === "High" ? 5 : waterUse === "Medium" ? 15 : 25} width="46" height={waterUse === "High" ? 25 : waterUse === "Medium" ? 15 : 5} rx="2" fill="url(#dyeGrad)" opacity="0.9"/>
-                   <path d="M2,5 L48,5" stroke="white" strokeOpacity="0.3" strokeWidth="1"/>
-                   <text x="25" y="44" textAnchor="middle" fontSize="6" fontWeight="bold" fill="#64748b">{isId?"Bak Pewarna":"Dye Tank"}</text>
+                {/* Factory */}
+                <g transform="translate(14,38)" filter="url(#u9shadow)">
+                  <ellipse cx="32" cy="62" rx="36" ry="5" fill="#0f172a" opacity="0.15"/>
+                  <rect x="10" y="-18" width="9" height="32" rx="3" fill="#475569"/>
+                  <rect x="10" y="-18" width="4" height="32" rx="2" fill="#64748b"/>
+                  <rect x="28" y="-12" width="8" height="26" rx="3" fill="#475569"/>
+                  <rect x="28" y="-12" width="3" height="26" rx="1.5" fill="#64748b"/>
+                  <rect x="8" y="-20" width="13" height="5" rx="2" fill="#334155"/>
+                  <rect x="26" y="-14" width="12" height="4" rx="2" fill="#334155"/>
+                  <rect x="0" y="14" width="62" height="48" rx="3" fill="url(#u9wall)"/>
+                  <rect x="48" y="14" width="14" height="48" rx="3" fill="#0f172a" opacity="0.1"/>
+                  <polygon points="0,14 31,2 62,14" fill="url(#u9roof)"/>
+                  <polygon points="48,14 31,2 62,14" fill="#0f172a" opacity="0.12"/>
+                  <rect x="6" y="22" width="12" height="9" rx="1.5" fill="#bae6fd" opacity="0.8"/>
+                  <rect x="6" y="22" width="6" height="9" rx="1" fill="white" opacity="0.15"/>
+                  <rect x="22" y="22" width="12" height="9" rx="1.5" fill="#bae6fd" opacity="0.8"/>
+                  <rect x="22" y="22" width="6" height="9" rx="1" fill="white" opacity="0.15"/>
+                  <rect x="38" y="22" width="12" height="9" rx="1.5" fill="#bae6fd" opacity="0.8"/>
+                  <rect x="38" y="22" width="6" height="9" rx="1" fill="white" opacity="0.15"/>
+                  <rect x="24" y="38" width="14" height="24" rx="2" fill="#1e293b"/>
+                  <rect x="24" y="38" width="7" height="24" rx="1" fill="#0f172a" opacity="0.18"/>
+                  <circle cx="36" cy="50" r="1.5" fill="#94a3b8"/>
+                  <rect x="8" y="34" width="14" height="6" rx="1" fill="#1e293b" opacity="0.7"/>
+                  <text x="15" y="39" textAnchor="middle" fontSize="4" fontWeight="bold" fill="#94a3b8">BATIK</text>
+                  <rect x="28" y="62" width="8" height="4" rx="1" fill="#475569"/>
                 </g>
-
-                {/* Treatment Plant (Detailed Tanks) */}
-                {treatment !== "None" && (
-                   <g transform="translate(175, 35)" filter="url(#premium-glow)">
-                      <rect width="65" height="50" rx="8" fill="#f0fdf4" stroke="#4ade80" strokeWidth="1.5"/>
-                      <rect x="10" y="10" width="18" height="25" rx="3" fill="#dcfce7" stroke="#4ade80" strokeWidth="1"/>
-                      <rect x="35" y="10" width="18" height="25" rx="3" fill="#dcfce7" stroke="#4ade80" strokeWidth="1"/>
-                      <circle cx="19" cy="22" r="3" fill="#4ade80" fillOpacity="0.4" />
-                      <circle cx="44" cy="22" r="3" fill="#4ade80" fillOpacity="0.4" />
-                      <line x1="28" y1="22" x2="35" y2="22" stroke="#4ade80" strokeWidth="1.5"/>
-                      <text x="32.5" y="44" textAnchor="middle" fontSize="6" fontWeight="bold" fill="#166534">{isId?"Instalasi IPAL":"IPal Treatment"}</text>
-                   </g>
-                )}
-
-                {/* Connections (Pipes) */}
-                <line x1="70" y1="60" x2="95" y2="60" stroke="#cbd5e1" strokeWidth="4" strokeLinecap="round"/>
-                <line x1="145" y1="60" x2={treatment === "None" ? "270" : "175"} y2={60} stroke={treatment === "None" ? "#ef4444" : "#cbd5e1"} strokeWidth="4" strokeDasharray={treatment === "None" ? "4" : "0"} strokeLinecap="round"/>
-                {treatment !== "None" && <line x1="240" y1="60" x2="270" y2="60" stroke="#22c55e" strokeWidth="4" strokeLinecap="round"/>}
-
-                {/* River (Dynamic Waves) */}
-                <g transform="translate(270, 20)" filter="url(#premium-glow)">
-                   <rect width="60" height="80" rx="12" fill="url(#riverGrad)" />
-                   <g opacity="0.4">
-                      {Array.from({length: 3}).map((_, i) => (
-                         <path key={i} d={`M10,${20 + i*20} Q25,${10 + i*20} 40,${20 + i*20} T70,${20 + i*20}`} stroke="white" strokeWidth="1.5" fill="none" transform={`translate(-5, ${i*5})`}/>
-                      ))}
-                   </g>
-                   <text x="30" y="94" textAnchor="middle" fontSize="8" fontWeight="black" fill="white" style={{letterSpacing: '1px'}}>{isId?"SUNGAI":"RIVER"}</text>
+                {/* Smoke */}
+                <g filter="url(#u9blur)">
+                  {dyeType==="Synthetic" && <>
+                    <ellipse cx="28" cy="28" rx="10" ry="8" fill="#475569" opacity="0.52" style={{animation:"u9-smoke-rise 2.5s ease-out infinite"}}/>
+                    <ellipse cx="32" cy="18" rx="13" ry="10" fill="#64748b" opacity="0.4" style={{animation:"u9-smoke-rise 2.5s ease-out infinite 0.4s"}}/>
+                    <ellipse cx="27" cy="8" rx="15" ry="11" fill="#64748b" opacity="0.28" style={{animation:"u9-smoke-rise 2.5s ease-out infinite 0.8s"}}/>
+                    <ellipse cx="33" cy="0" rx="17" ry="12" fill="#94a3b8" opacity="0.16" style={{animation:"u9-smoke-rise 2.5s ease-out infinite 1.2s"}}/>
+                    <ellipse cx="46" cy="32" rx="8" ry="6" fill="#475569" opacity="0.42" style={{animation:"u9-smoke2-rise 3s ease-out infinite 0.2s"}}/>
+                    <ellipse cx="50" cy="22" rx="10" ry="8" fill="#64748b" opacity="0.3" style={{animation:"u9-smoke2-rise 3s ease-out infinite 0.7s"}}/>
+                    <ellipse cx="48" cy="13" rx="12" ry="9" fill="#94a3b8" opacity="0.2" style={{animation:"u9-smoke2-rise 3s ease-out infinite 1.1s"}}/>
+                  </>}
+                  {dyeType==="Natural" && <>
+                    <ellipse cx="28" cy="28" rx="6" ry="5" fill="#94a3b8" opacity="0.2" style={{animation:"u9-smoke-rise 4s ease-out infinite"}}/>
+                    <ellipse cx="30" cy="20" rx="8" ry="6" fill="#94a3b8" opacity="0.13" style={{animation:"u9-smoke-rise 4s ease-out infinite 1s"}}/>
+                    <ellipse cx="46" cy="30" rx="5" ry="4" fill="#94a3b8" opacity="0.16" style={{animation:"u9-smoke2-rise 4.5s ease-out infinite 0.5s"}}/>
+                  </>}
                 </g>
+                {/* Pipe */}
+                <line x1="50" y1="100" x2="50" y2="114" stroke={treatment==="None"?"#ef4444":"#22c55e"} strokeWidth="3.5" strokeLinecap="round"/>
+                <line x1="50" y1="114" x2={treatment!=="None"?96:148} y2="114" stroke={treatment==="None"?"#ef4444":"#22c55e"} strokeWidth="3.5" strokeLinecap="round"/>
+                {treatment==="None" && <line x1="148" y1="114" x2="148" y2="120" stroke="#ef4444" strokeWidth="3.5" strokeLinecap="round"/>}
+                {/* IPAL */}
+                {treatment!=="None" && <g transform="translate(96,88)" filter="url(#u9shadow)">
+                  <ellipse cx="24" cy="26" rx="26" ry="4" fill="#0f172a" opacity="0.13"/>
+                  <rect width="48" height="28" rx="5" fill="url(#u9ipal)" stroke="#22c55e" strokeWidth="1.5"/>
+                  <rect x="0" y="0" width="24" height="28" rx="5" fill="white" opacity="0.07"/>
+                  <rect x="5" y="5" width="16" height="16" rx="3" fill="#dcfce7" stroke="#4ade80" strokeWidth="1"/>
+                  <rect x="27" y="5" width="16" height="16" rx="3" fill="#dcfce7" stroke="#4ade80" strokeWidth="1"/>
+                  <circle cx="13" cy="13" r="4" fill="#4ade80" opacity="0.55"/>
+                  <circle cx="35" cy="13" r="4" fill="#4ade80" opacity="0.55"/>
+                  <circle cx="13" cy="13" r="2" fill="#16a34a" opacity="0.8"/>
+                  <circle cx="35" cy="13" r="2" fill="#16a34a" opacity="0.8"/>
+                  <text x="24" y="36" textAnchor="middle" fontSize="5.5" fontWeight="bold" fill="#166534">IPAL</text>
+                  <line x1="48" y1="14" x2="60" y2="14" stroke="#22c55e" strokeWidth="3" strokeLinecap="round"/>
+                  <line x1="60" y1="14" x2="60" y2="32" stroke="#22c55e" strokeWidth="3" strokeLinecap="round"/>
+                </g>}
+
+                {/* River */}
+                <rect x="0" y="118" width="400" height="42" fill="url(#u9river)"/>
+                <rect x="0" y="118" width="400" height="42" fill="url(#u9shimmer)"/>
+                <path d="M0,122 Q50,116 100,122 Q150,128 200,122 Q250,116 300,122 Q350,128 400,122" fill="none" stroke="white" strokeWidth="1.8" opacity="0.25" style={{animation:"u9-wave-shift 3s linear infinite"}}/>
+                <path d="M0,132 Q50,126 100,132 Q150,138 200,132 Q250,126 300,132 Q350,138 400,132" fill="none" stroke="white" strokeWidth="1.1" opacity="0.15" style={{animation:"u9-wave-shift 4s linear infinite 0.5s"}}/>
+                <path d="M0,142 Q60,137 120,142 Q180,147 240,142 Q300,137 360,142 Q380,144 400,142" fill="none" stroke="white" strokeWidth="0.7" opacity="0.09" style={{animation:"u9-wave-shift 5s linear infinite 1s"}}/>
+                <ellipse cx="320" cy="130" rx="45" ry="6" fill="white" opacity="0.06" style={{animation:"u9-shimmer-move 4s ease-in-out infinite"}}/>
+                {/* Discharge plume */}
+                {treatment==="None" && <g filter="url(#u9blur)" opacity="0.75">
+                  <ellipse cx="148" cy="122" rx="22" ry="7" fill={dyeType==="Synthetic"?"#3b82f6":"#92400e"} opacity="0.55"/>
+                  <ellipse cx="168" cy="127" rx="16" ry="5" fill={dyeType==="Synthetic"?"#1d4ed8":"#78350f"} opacity="0.4"/>
+                  <ellipse cx="188" cy="132" rx="12" ry="4" fill={dyeType==="Synthetic"?"#1e40af":"#451a03"} opacity="0.25"/>
+                </g>}
+                {/* Fish 1 */}
+                {outputs.waterQuality!=="Poor" && <g style={{animation:"u9-fish-swim 4s ease-in-out infinite", transformOrigin:"158px 131px"}}>
+                  <g transform="translate(158,131)">
+                    <ellipse cx="0" cy="0" rx="11" ry="5.5" fill="#fbbf24"/>
+                    <ellipse cx="-2" cy="-1" rx="5" ry="3" fill="#fde68a" opacity="0.45"/>
+                    <path d="M11,0 L18,-5 L18,5 Z" fill="#f59e0b"/>
+                    <circle cx="-6" cy="-1" r="1.8" fill="#1e293b"/>
+                    <circle cx="-6.5" cy="-1.3" r="0.7" fill="white"/>
+                    <path d="M-3,-4 Q2,-7 7,-4" stroke="#f59e0b" strokeWidth="1.2" fill="none" opacity="0.55"/>
+                    <path d="M2,3 Q5,6 8,3" stroke="#f59e0b" strokeWidth="1" fill="none" opacity="0.45"/>
+                  </g>
+                </g>}
+                {/* Fish 2 */}
+                {outputs.waterQuality==="Good" && <g style={{animation:"u9-fish2-swim 6s ease-in-out infinite", transformOrigin:"222px 143px"}}>
+                  <g transform="translate(222,143)">
+                    <ellipse cx="0" cy="0" rx="8" ry="4" fill="#34d399"/>
+                    <ellipse cx="-1" cy="-0.5" rx="3.5" ry="2" fill="#6ee7b7" opacity="0.45"/>
+                    <path d="M8,0 L13,-4 L13,4 Z" fill="#10b981"/>
+                    <circle cx="-4" cy="-0.5" r="1.4" fill="#1e293b"/>
+                    <circle cx="-4.4" cy="-0.8" r="0.5" fill="white"/>
+                  </g>
+                </g>}
+                {/* Pollution */}
+                {outputs.waterQuality==="Poor" && <g filter="url(#u9blur)" opacity="0.8">
+                  <ellipse cx="132" cy="126" rx="18" ry="7" fill="#1e293b" opacity="0.58" style={{animation:"u9-pollution-pulse 2s ease-in-out infinite"}}/>
+                  <ellipse cx="212" cy="134" rx="14" ry="6" fill="#0f172a" opacity="0.52" style={{animation:"u9-pollution-pulse 2.5s ease-in-out infinite 0.4s"}}/>
+                  <ellipse cx="292" cy="128" rx="16" ry="6" fill="#1e293b" opacity="0.48" style={{animation:"u9-pollution-pulse 3s ease-in-out infinite 0.8s"}}/>
+                  <circle cx="172" cy="132" r="5" fill="#0f172a" opacity="0.42" style={{animation:"u9-bubble 2s ease-out infinite 0.3s"}}/>
+                  <circle cx="252" cy="138" r="4" fill="#0f172a" opacity="0.38" style={{animation:"u9-bubble 2.5s ease-out infinite 1s"}}/>
+                </g>}
+                <text x="378" y="154" textAnchor="middle" fontSize="7" fontWeight="bold" fill="white" opacity="0.45" letterSpacing="1.5">{isId?"SUNGAI":"RIVER"}</text>
               </svg>
-              <div className="mt-4 flex items-center justify-center gap-4 text-[10px] font-bold">
-                 <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-blue-500"/> {isId?"Pewarna":"Dye"}</div>
-                 <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-red-400"/> {isId?"Tanpa Olah":"Untreated"}</div>
-                 <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-green-500"/> {isId?"Terolah":"Treated"}</div>
+              {/* 3 RESULT ROWS */}
+              <div className="space-y-2 pt-1">
+                {(()=>{
+                  const wq=outputs.waterQuality;
+                  const isGood=wq==="Good",isBad=wq==="Poor";
+                  const pct=isGood?90:isBad?15:50;
+                  const barCol=isGood?"bg-sky-400":isBad?"bg-rose-400":"bg-amber-400";
+                  const label=isId?"Kualitas Air":"Water Quality";
+                  const display=isId?({Good:"Baik",Medium:"Sedang",Poor:"Buruk"} as Record<string,string>)[wq]:wq;
+                  const textCol=isGood?"text-sky-600":isBad?"text-rose-600":"text-amber-600";
+                  return(
+                    <div className="flex items-center gap-3">
+                      <div className="w-6 h-6 shrink-0 flex items-center justify-center">
+                        <svg viewBox="0 0 24 24" className="w-5 h-5">
+                          <path d="M12 2C8 8 4 12 4 16a8 8 0 0016 0c0-4-4-8-8-14z" fill={isGood?"#38bdf8":isBad?"#64748b":"#94a3b8"}/>
+                          {isGood&&<path d="M9 16l2 2 4-4" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round"/>}
+                        </svg>
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="text-[9px] font-bold uppercase tracking-widest text-slate-400">{label}</span>
+                          <span className={`text-[11px] font-black ${textCol}`}>{display}</span>
+                        </div>
+                        <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                          <div className={`h-full rounded-full transition-all duration-700 ${barCol}`} style={{width:`${pct}%`}}/>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
+                {(()=>{
+                  const er=outputs.ecosystemRisk;
+                  const isLow=er==="Low",isHigh=er==="High";
+                  const pct=isHigh?85:isLow?10:45;
+                  const barCol=isHigh?"bg-rose-400":isLow?"bg-emerald-400":"bg-amber-400";
+                  const label=isId?"Risiko Ekosistem":"Ecosystem Risk";
+                  const display=isId?({Low:"Rendah",Medium:"Sedang",High:"Tinggi"} as Record<string,string>)[er]:er;
+                  const textCol=isLow?"text-emerald-600":isHigh?"text-rose-600":"text-amber-600";
+                  return(
+                    <div className="flex items-center gap-3">
+                      <div className="w-6 h-6 shrink-0 flex items-center justify-center">
+                        <svg viewBox="0 0 24 24" className="w-5 h-5">
+                          <path d="M12 3C9 7 5 10 5 14a7 7 0 0014 0c0-4-4-7-7-11z" fill={isLow?"#4ade80":isHigh?"#fca5a5":"#fcd34d"}/>
+                          <rect x="11" y="17" width="2" height="3" rx="1" fill={isLow?"#166534":isHigh?"#9f1239":"#92400e"}/>
+                          {isHigh&&<path d="M9 9l6 6M15 9l-6 6" stroke="#ef4444" strokeWidth="1.5" strokeLinecap="round"/>}
+                        </svg>
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="text-[9px] font-bold uppercase tracking-widest text-slate-400">{label}</span>
+                          <span className={`text-[11px] font-black ${textCol}`}>{display}</span>
+                        </div>
+                        <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                          <div className={`h-full rounded-full transition-all duration-700 ${barCol}`} style={{width:`${pct}%`}}/>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
+                {(()=>{
+                  const pf=outputs.productionFeasibility;
+                  const isLow=pf==="Low",isHigh=pf==="High";
+                  const pct=isHigh?85:isLow?15:50;
+                  const barCol=isHigh?"bg-emerald-400":isLow?"bg-rose-400":"bg-amber-400";
+                  const label=isId?"Kelayakan Produksi":"Production Feasibility";
+                  const display=isId?({Low:"Rendah",Medium:"Sedang",High:"Tinggi"} as Record<string,string>)[pf]:pf;
+                  const textCol=isHigh?"text-emerald-600":isLow?"text-rose-600":"text-amber-600";
+                  return(
+                    <div className="flex items-center gap-3">
+                      <div className="w-6 h-6 shrink-0 flex items-center justify-center">
+                        <svg viewBox="0 0 24 24" className="w-5 h-5">
+                          <rect x="3" y="12" width="4" height="9" rx="1" fill={isHigh?"#10b981":isLow?"#ef4444":"#f59e0b"}/>
+                          <rect x="10" y="8" width="4" height="13" rx="1" fill={isHigh?"#10b981":isLow?"#ef4444":"#f59e0b"} opacity="0.8"/>
+                          <rect x="17" y="4" width="4" height="17" rx="1" fill={isHigh?"#10b981":isLow?"#ef4444":"#f59e0b"} opacity="0.6"/>
+                          {isHigh&&<path d="M4 10l7-5 7-3" stroke="#10b981" strokeWidth="1.5" fill="none" strokeLinecap="round"/>}
+                        </svg>
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="text-[9px] font-bold uppercase tracking-widest text-slate-400">{label}</span>
+                          <span className={`text-[11px] font-black ${textCol}`}>{display}</span>
+                        </div>
+                        <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                          <div className={`h-full rounded-full transition-all duration-700 ${barCol}`} style={{width:`${pct}%`}}/>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
               </div>
-            </div>
 
-            {/* ── OUTPUTS ── */}
-            <div className="grid grid-cols-3 gap-3">
-              {[
-                { label: isId?"Kualitas Air":"Water Quality", val: outputs.waterQuality, display: isId?{Good:"Baik",Medium:"Sedang",Poor:"Buruk"}[outputs.waterQuality]:outputs.waterQuality, positive: true },
-                { label: isId?"Risiko Ekosistem":"Ecosystem Risk", val: outputs.ecosystemRisk, display: isId?{Low:"Rendah",Medium:"Sedang",High:"Tinggi"}[outputs.ecosystemRisk]:outputs.ecosystemRisk, positive: false },
-                { label: isId?"Kelayakan Produksi":"Production Feasibility", val: outputs.productionFeasibility, display: isId?{Low:"Rendah",Medium:"Sedang",High:"Tinggi"}[outputs.productionFeasibility]:outputs.productionFeasibility, positive: false },
-              ].map(item => {
-                const isGood = item.positive ? item.val === "Good" : item.val === "Low";
-                const isBad  = item.positive ? item.val === "Poor" : item.val === "High";
-                const badgeColor = isGood ? "bg-emerald-600" : isBad ? "bg-rose-600" : "bg-amber-500";
-                const valColor = isGood ? "text-emerald-700" : isBad ? "text-rose-700" : "text-amber-700";
-                return (
-                  <div key={item.label} className="bg-white rounded-2xl border border-gray-300 p-4 text-center shadow-sm">
-                    <div className="text-[11px] text-gray-600 mb-2 font-semibold tracking-wide uppercase leading-tight">{item.label}</div>
-                    <div className={`text-2xl font-black leading-none mb-2 ${valColor}`}>{item.display}</div>
-                    <span className={`text-[11px] font-bold px-3 py-1 rounded-full text-white ${badgeColor}`}>{item.val}</span>
-                  </div>
-                );
-              })}
+              {!simRan&&<p className="text-[10px] text-slate-400 text-center italic pt-1">{isId?"Klik 'Jalankan Simulasi' untuk melihat hasil.":"Click 'Run Simulation' to see results."}</p>}
             </div>
-            {!simRan && <p className="text-[11px] text-gray-400 text-center italic">{isId?"Klik 'Jalankan Simulasi' untuk melihat hasil.":"Click 'Run Simulation' to see results."}</p>}
 
             {/* ── RECORDED DATA TABLE ── */}
             {history.length > 0 && (
-              <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-                <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
-                  <span className="text-[12px] font-bold text-gray-700 uppercase tracking-wider">{isId?"Data Tercatat":"Recorded Data"}</span>
-                  <button onClick={() => setHistory([])} className="text-[11px] text-gray-400 hover:text-gray-600 font-bold uppercase tracking-wider">{isId?"Hapus":"Clear"}</button>
+              <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+                <div className="px-4 py-3 border-b border-slate-100 flex items-center justify-between">
+                  <span className="text-[11px] font-bold text-slate-600 uppercase tracking-wider">{isId?"Data Tercatat":"Recorded Data"}</span>
+                  <button onClick={()=>setHistory([])} className="text-[10px] text-slate-400 hover:text-slate-600 font-bold uppercase tracking-wider">{isId?"Hapus":"Clear"}</button>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full text-[11px]">
                     <thead>
-                      <tr className="bg-gray-50 border-b border-gray-200">
-                        {["#", isId?"Pewarna":"Dye", isId?"Air":"Water", isId?"Pengolahan":"Treatment", isId?"Kualitas Air":"Water Q.", isId?"Risiko Ekosistem":"Eco Risk", isId?"Kelayakan":"Feasibility"].map(h => (
-                          <th key={h} className="px-3 py-2.5 text-left text-[10px] font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap">{h}</th>
+                      <tr className="bg-slate-50 border-b border-slate-100">
+                        {["#",isId?"Pewarna":"Dye",isId?"Air":"Water",isId?"Pengolahan":"Treatment",isId?"Kualitas Air":"Water Q.",isId?"Risiko":"Eco Risk",isId?"Kelayakan":"Feasibility"].map(h=>(
+                          <th key={h} className="px-3 py-2 text-left text-[9px] font-bold text-slate-400 uppercase tracking-wider whitespace-nowrap">{h}</th>
                         ))}
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100">
-                      {history.map((row, i) => (
-                        <tr key={row.id} className={i % 2 === 1 ? "bg-gray-50/60" : ""}>
-                          <td className="px-3 py-2.5 text-gray-400 font-medium">{row.id}</td>
-                          <td className="px-3 py-2.5 text-gray-700">{isId?{Synthetic:"Sintetis",Natural:"Alami"}[row.dye]:row.dye}</td>
-                          <td className="px-3 py-2.5 text-gray-700">{isId?{Low:"Rendah",Medium:"Sedang",High:"Tinggi"}[row.water]:row.water}</td>
-                          <td className="px-3 py-2.5 text-gray-700">{isId?{None:"Tidak Ada",Partial:"Sebagian",Full:"Penuh"}[row.treatment]:row.treatment}</td>
-                          <td className="px-3 py-2.5 font-semibold text-gray-900">{isId?{Good:"Baik",Medium:"Sedang",Poor:"Buruk"}[row.waterQuality]:row.waterQuality}</td>
-                          <td className="px-3 py-2.5 font-semibold text-gray-900">{isId?{Low:"Rendah",Medium:"Sedang",High:"Tinggi"}[row.ecosystemRisk]:row.ecosystemRisk}</td>
-                          <td className="px-3 py-2.5 font-semibold text-gray-900">{isId?{Low:"Rendah",Medium:"Sedang",High:"Tinggi"}[row.productionFeasibility]:row.productionFeasibility}</td>
+                    <tbody className="divide-y divide-slate-50">
+                      {history.map((row,i)=>(
+                        <tr key={row.id} className={i%2===1?"bg-slate-50/60":""}>
+                          <td className="px-3 py-2 text-slate-400 font-medium">{row.id}</td>
+                          <td className="px-3 py-2 text-slate-600">{isId?{Synthetic:"Sintetis",Natural:"Alami"}[row.dye]:row.dye}</td>
+                          <td className="px-3 py-2 text-slate-600">{isId?{Low:"Rendah",Medium:"Sedang",High:"Tinggi"}[row.water]:row.water}</td>
+                          <td className="px-3 py-2 text-slate-600">{isId?{None:"Tidak Ada",Partial:"Sebagian",Full:"Penuh"}[row.treatment]:row.treatment}</td>
+                          <td className="px-3 py-2 font-semibold text-slate-700">{isId?{Good:"Baik",Medium:"Sedang",Poor:"Buruk"}[row.waterQuality]:row.waterQuality}</td>
+                          <td className="px-3 py-2 font-semibold text-slate-700">{isId?{Low:"Rendah",Medium:"Sedang",High:"Tinggi"}[row.ecosystemRisk]:row.ecosystemRisk}</td>
+                          <td className="px-3 py-2 font-semibold text-slate-700">{isId?{Low:"Rendah",Medium:"Sedang",High:"Tinggi"}[row.productionFeasibility]:row.productionFeasibility}</td>
                         </tr>
                       ))}
                     </tbody>
