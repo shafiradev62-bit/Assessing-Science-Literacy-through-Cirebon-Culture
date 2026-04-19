@@ -1204,7 +1204,7 @@ const TapeKetanSim = ({ onRun }: { onRun: (d: Record<string, unknown>) => void }
               <rect x="2" y={80 - Math.round(((fermTemp - 15) / 30) * 70)}
                 width="8" height={Math.round(((fermTemp - 15) / 30) * 70)}
                 rx="4"
-                fill={fermTem"#ef4444" : fermTemp > 25 ? "#f97316" : "#3b82f6"}/>
+                fill={fermTemp > 35 ? "#ef4444" : fermTemp > 25 ? "#f97316" : "#3b82f6"}/>
               <circle cx="6" cy="84" r="7"
                 fill={fermTemp > 35 ? "#ef4444" : fermTemp > 25 ? "#f97316" : "#3b82f6"}
                 stroke="#94a3b8" strokeWidth="1"/>
