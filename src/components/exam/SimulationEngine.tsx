@@ -979,112 +979,272 @@ const TapeKetanSim = ({ onRun }: { onRun: (d: Record<string, unknown>) => void }
           </div>
         </div>
 
-        <div ref={animRef} className="relative h-44 bg-gradient-to-b from-green-50 via-emerald-50 to-lime-50 rounded-xl overflow-hidden border border-border/30">
-          {/* Banana leaf base */}
-          {packaging === "banana" && (
-            <div className="absolute inset-0 flex items-end justify-center">
-              {/* Banana leaf shape */}
-              <div className="w-40 h-20 bg-gradient-to-t from-emerald-800 via-emerald-600 to-emerald-500 rounded-t-full shadow-lg relative overflow-hidden">
-                {/* Leaf veins */}
-                <svg className="absolute inset-0 w-full h-full opacity-30" viewBox="0 0 160 80">
-                  {[...Array(8)].map((_, i) => (
-                    <line key={i} x1="80" y1="80" x2={10 + i * 20} y2="0" stroke="#166534" strokeWidth="1" />
-                  ))}
-                </svg>
-                {/* Tape rice inside */}
-                <div className="absolute -top-8 left-1/2 -translate-x-1/2 w-28 h-10 bg-gradient-to-b from-white via-stone-50 to-stone-100 rounded-lg shadow-inner border border-stone-200 overflow-hidden">
-                  {/* Fermentation bubbles */}
-                  {[...Array(5)].map((_, i) => (
-                    <div key={i} className="ferm-bubble absolute w-2 h-2 rounded-full animate-bounce"
-                      style={{
-                        bottom: `${5 + i * 3}%`,
-                        background: calc.sweetness > 50 ? "#fbbf24" : calc.sweetness > 25 ? "#f59e0b" : "#92400e",
-                        opacity: calc.sweetness > 10 ? 0.6 : 0.2,
-                        animationDuration: `${1.5 + i * 0.3}s`
-                      }}
+        {/* ── REALISTIC SVG SCENE ── */}
+        <div ref={animRef} className="rounded-xl overflow-hidden border border-border/30 bg-gradient-to-b from-[#f0fdf4] via-[#ecfdf5] to-[#d1fae5]">
+          <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg" className="w-full">
+            <defs>
+              {/* Banana leaf gradient */}
+              <linearGradient id="leafGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#16a34a"/>
+                <stop offset="40%" stopColor="#15803d"/>
+                <stop offset="100%" stopColor="#14532d"/>
+              </linearGradient>
+              <linearGradient id="leafShine" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#4ade80" stopOpacity="0.4"/>
+                <stop offset="100%" stopColor="#166534" stopOpacity="0"/>
+              </linearGradient>
+              {/* Rice grain gradient */}
+              <radialGradient id="riceGrain" cx="35%" cy="30%" r="65%">
+                <stop offset="0%" stopColor="#fffbeb"/>
+                <stop offset="60%" stopColor="#fef3c7"/>
+                <stop offset="100%" stopColor="#fde68a"/>
+              </radialGradient>
+              {/* Fermented rice tint — yellower as sweetness rises */}
+              <radialGradient id="riceFerm" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor={calc.sweetness > 60 ? "#fef08a" : calc.sweetness > 30 ? "#fef9c3" : "#ffffff"} stopOpacity="0.7"/>
+                <stop offset="100%" stopColor={calc.sweetness > 60 ? "#fde047" : "#fef3c7"} stopOpacity="0.3"/>
+              </radialGradient>
+              {/* Plastic bag gradient */}
+              <linearGradient id="plasticGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#dbeafe"/>
+                <stop offset="50%" stopColor="#bfdbfe"/>
+                <stop offset="100%" stopColor="#93c5fd"/>
+              </linearGradient>
+              {/* Steam gradient */}
+              <linearGradient id="steamGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+                <stop offset="0%" stopColor="#d1fae5" stopOpacity="0.8"/>
+                <stop offset="100%" stopColor="#d1fae5" stopOpacity="0"/>
+              </linearGradient>
+              <filter id="softBlur">
+                <feGaussianBlur stdDeviation="0.8"/>
+              </filter>
+              <filter id="grainShadow">
+                <feDropShadow dx="0.3" dy="0.5" stdDeviation="0.4" floodOpacity="0.2"/>
+              </filter>
+            </defs>
+
+            {/* ── BACKGROUND WOOD TABLE ── */}
+            <rect x="0" y="155" width="320" height="45" fill="#92400e" opacity="0.15" rx="4"/>
+            <rect x="0" y="158" width="320" height="3" fill="#78350f" opacity="0.2"/>
+            {[0,40,80,120,160,200,240,280].map(x => (
+              <line key={x} x1={x} y1="158" x2={x+30} y2="200" stroke="#78350f" strokeWidth="0.5" opacity="0.1"/>
+            ))}
+
+            {packaging === "banana" ? (
+              <g>
+                {/* ── BANANA LEAF (bottom layer, folded) ── */}
+                {/* Left fold */}
+                <path d="M60,160 Q80,100 160,90 Q240,100 260,160 Q220,170 160,172 Q100,170 60,160 Z"
+                  fill="url(#leafGrad)" opacity="0.95"/>
+                {/* Leaf shine overlay */}
+                <path d="M60,160 Q80,100 160,90 Q240,100 260,160 Q220,170 160,172 Q100,170 60,160 Z"
+                  fill="url(#leafShine)"/>
+                {/* Main leaf veins */}
+                <line x1="160" y1="90" x2="160" y2="172" stroke="#166534" strokeWidth="1.5" opacity="0.5"/>
+                {[...Array(7)].map((_, i) => {
+                  const angle = -60 + i * 20;
+                  const rad = angle * Math.PI / 180;
+                  return (
+                    <line key={i}
+                      x1="160" y1={130}
+                      x2={160 + Math.cos(rad) * 55}
+                      y2={130 + Math.sin(rad) * 30}
+                      stroke="#166534" strokeWidth="0.8" opacity="0.35"
                     />
-                  ))}
-                  {/* Yeast bloom */}
-                  {calc.aroma > 50 && (
-                    <div className="absolute inset-0 flex items-center justify-center gap-1">
-                      {[1,2,3].map(i => (
-                        <div key={i} className="yeast w-1.5 h-1.5 rounded-full bg-white/70 animate-ping"
-                          style={{ animationDuration: `${2 + i * 0.5}s` }} />
-                      ))}
-                    </div>
-                  )}
-                  {/* Sweet scent lines */}
-                  {calc.sweetness > 60 && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 flex gap-1">
-                      <span className="text-[10px] animate-bounce" style={{ animationDuration: "1s" }}>🍚</span>
-                      <span className="text-[10px] animate-bounce" style={{ animationDelay: "0.3s" }}>✨</span>
-                      <span className="text-[10px] animate-bounce" style={{ animationDelay: "0.6s" }}>🍚</span>
-                    </div>
-                  )}
-                </div>
+                  );
+                })}
+                {/* Leaf edge texture dots */}
+                {[70,90,110,130,150,170,190,210,230,250].map((x, i) => (
+                  <circle key={i} cx={x} cy={160 + Math.sin(i) * 3} r="1" fill="#14532d" opacity="0.3"/>
+                ))}
+
+                {/* ── RICE MOUND on leaf ── */}
+                {/* Base mound shape */}
+                <ellipse cx="160" cy="138" rx="62" ry="28" fill="url(#riceGrain)" filter="url(#softBlur)"/>
+                <ellipse cx="160" cy="138" rx="62" ry="28" fill="url(#riceFerm)"/>
+
+                {/* ── INDIVIDUAL RICE GRAINS (realistic oval shapes) ── */}
+                {[
+                  // Row 1 — top center
+                  [148,118],[158,115],[168,118],[178,121],[138,121],
+                  // Row 2
+                  [132,126],[142,123],[152,121],[162,120],[172,122],[182,125],[192,128],
+                  // Row 3 — widest
+                  [120,132],[130,129],[140,127],[150,126],[160,125],[170,126],[180,128],[190,130],[200,133],
+                  // Row 4
+                  [118,138],[128,135],[138,133],[148,132],[158,131],[168,132],[178,134],[188,136],[198,139],
+                  // Row 5
+                  [122,144],[132,141],[142,139],[152,138],[162,137],[172,138],[182,140],[192,143],
+                  // Row 6 — bottom
+                  [130,150],[140,147],[150,145],[160,144],[170,145],[180,147],[190,150],
+                  // Row 7 — very bottom
+                  [140,155],[150,153],[160,152],[170,153],[180,155],
+                ].map(([cx, cy], i) => {
+                  // Each grain: small rotated ellipse, slightly varied
+                  const rot = (i * 37) % 180;
+                  const w = 4.5 + (i % 3) * 0.5;
+                  const h = 2.2 + (i % 2) * 0.3;
+                  // Color varies: white → cream → pale yellow based on fermentation
+                  const fermPct = calc.sweetness / 100;
+                  const r = Math.round(255);
+                  const g = Math.round(243 + fermPct * 12);
+                  const b = Math.round(220 - fermPct * 80);
+                  return (
+                    <ellipse key={i} cx={cx} cy={cy} rx={w} ry={h}
+                      fill={`rgb(${r},${g},${b})`}
+                      stroke="#d97706" strokeWidth="0.3" opacity="0.92"
+                      transform={`rotate(${rot},${cx},${cy})`}
+                      filter="url(#grainShadow)"
+                    />
+                  );
+                })}
+
+                {/* Fermentation liquid sheen — amber puddle between grains */}
+                {calc.sweetness > 30 && (
+                  <ellipse cx="160" cy="148" rx={40 * (calc.sweetness / 100)} ry={6 * (calc.sweetness / 100)}
+                    fill="#fbbf24" opacity={0.15 + calc.sweetness * 0.002}/>
+                )}
+
+                {/* ── FERMENTATION BUBBLES rising from rice ── */}
+                {calc.aroma > 20 && [145,155,160,168,175].map((bx, i) => (
+                  <circle key={i} cx={bx} cy={120 - i * 6}
+                    r={1.5 + (i % 2)}
+                    fill={calc.sweetness > 50 ? "#fde047" : "#fef9c3"}
+                    opacity={0.5 + i * 0.08}
+                    className="ferm-bubble"
+                    style={{ animation: `bounce ${1.2 + i * 0.3}s ease-in-out infinite alternate` }}
+                  />
+                ))}
+
+                {/* ── STEAM / AROMA WISPS ── */}
+                {calc.aroma > 40 && [148,160,172].map((sx, i) => (
+                  <path key={i}
+                    d={`M${sx},112 Q${sx - 4 + i * 4},104 ${sx + 2},96 Q${sx + 6},88 ${sx - 2},80`}
+                    fill="none" stroke="#d1fae5" strokeWidth="2.5" strokeLinecap="round"
+                    opacity={0.4 + i * 0.1}
+                    style={{ animation: `pulse ${2 + i * 0.5}s ease-in-out infinite` }}
+                  />
+                ))}
+
+                {/* ── LEAF FOLD FLAP (top) ── */}
+                <path d="M100,90 Q130,70 160,68 Q190,70 220,90 Q200,85 160,83 Q120,85 100,90 Z"
+                  fill="#15803d" opacity="0.85"/>
+                <path d="M100,90 Q130,70 160,68 Q190,70 220,90 Q200,85 160,83 Q120,85 100,90 Z"
+                  fill="url(#leafShine)" opacity="0.5"/>
+                {/* Top flap vein */}
+                <line x1="160" y1="68" x2="160" y2="90" stroke="#166534" strokeWidth="1" opacity="0.4"/>
+
+                {/* ── BANANA LEAF TIE STRING ── */}
+                <path d="M110,155 Q160,162 210,155" fill="none" stroke="#92400e" strokeWidth="1.5" strokeLinecap="round" opacity="0.6"/>
+                <circle cx="160" cy="162" r="3" fill="#78350f" opacity="0.5"/>
+
                 {/* Label */}
-                <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[9px] font-bold text-emerald-700 whitespace-nowrap">
-                  🍌🍃 {isId ? "Daun Pisang Alami" : "Natural Banana Leaf"}
-                </div>
-              </div>
-            </div>
-          )}
+                <text x="160" y="185" textAnchor="middle" fontSize="8" fontWeight="bold" fill="#166534" fontFamily="sans-serif">
+                  {isId ? "🍌 Tape Ketan — Daun Pisang" : "🍌 Tape Ketan — Banana Leaf"}
+                </text>
+              </g>
+            ) : (
+              <g>
+                {/* ── PLASTIC BAG ── */}
+                <path d="M95,155 Q90,100 100,75 Q130,65 160,63 Q190,65 220,75 Q230,100 225,155 Q195,165 160,167 Q125,165 95,155 Z"
+                  fill="url(#plasticGrad)" opacity="0.75"/>
+                {/* Plastic shine */}
+                <path d="M105,80 Q108,72 120,70 Q115,85 108,95 Z" fill="white" opacity="0.35"/>
+                <path d="M200,82 Q205,74 215,73 Q212,88 205,97 Z" fill="white" opacity="0.2"/>
+                {/* Plastic seal top */}
+                <rect x="110" y="68" width="100" height="6" rx="3" fill="#93c5fd" opacity="0.8"/>
+                <rect x="115" y="69" width="90" height="3" rx="1.5" fill="white" opacity="0.4"/>
 
-          {/* Plastic wrap alternative */}
-          {packaging === "plastic" && (
-            <div className="absolute inset-0 flex items-end justify-center">
-              <div className="relative w-36 h-16 mb-4">
-                <div className="w-full h-full bg-gradient-to-b from-blue-50 via-blue-100 to-blue-200 rounded-lg shadow-md border border-blue-300 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-blue-200/20" />
-                  {/* Shine */}
-                  <div className="absolute top-1 left-2 w-3 h-10 bg-white/40 rounded-r-full" />
-                  {/* Rice inside */}
-                  <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-24 h-8 bg-stone-100 rounded border border-stone-200 overflow-hidden">
-                    {[...Array(4)].map((_, i) => (
-                      <div key={i} className="ferm-bubble absolute w-1.5 h-1.5 rounded-full animate-bounce"
-                        style={{ bottom: `${10 + i * 20}%`, left: `${20 + i * 15}%`, background: "#d97706", opacity: calc.sweetness > 10 ? 0.5 : 0.2 }}
-                      />
-                    ))}
-                  </div>
-                </div>
-                <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[9px] font-bold text-blue-600 whitespace-nowrap">
-                  🛍️ {isId ? "Plastik" : "Plastic"} ⚠️
-                </div>
-              </div>
-            </div>
-          )}
+                {/* Rice grains inside plastic */}
+                {[
+                  [148,110],[158,107],[168,110],[178,113],[138,113],
+                  [132,118],[142,115],[152,113],[162,112],[172,114],[182,117],
+                  [128,124],[138,121],[148,119],[158,118],[168,119],[178,121],[188,124],
+                  [126,130],[136,127],[146,125],[156,124],[166,125],[176,127],[186,130],
+                  [130,136],[140,133],[150,131],[160,130],[170,131],[180,133],[190,136],
+                  [136,142],[146,139],[156,138],[166,138],[176,139],[186,142],
+                  [142,148],[152,145],[162,144],[172,145],[182,148],
+                ].map(([cx, cy], i) => {
+                  const rot = (i * 41) % 180;
+                  const w = 4.2 + (i % 3) * 0.4;
+                  const h = 2.0 + (i % 2) * 0.3;
+                  const fermPct = calc.sweetness / 100;
+                  const r = 255; const g = Math.round(243 + fermPct * 10); const b = Math.round(220 - fermPct * 70);
+                  return (
+                    <ellipse key={i} cx={cx} cy={cy} rx={w} ry={h}
+                      fill={`rgb(${r},${g},${b})`}
+                      stroke="#d97706" strokeWidth="0.25" opacity="0.88"
+                      transform={`rotate(${rot},${cx},${cy})`}
+                    />
+                  );
+                })}
 
-          {/* Temperature indicator */}
-          <div className="absolute top-3 left-3">
-            <div className="text-[9px] font-bold text-orange-500 mb-0.5">{fermTemp}°C</div>
-            <div className={`text-[8px] ${calc.tempOptimal ? "text-emerald-500" : "text-red-400"}`}>
-              {calc.tempOptimal ? "✅ Optimal" : "⚠️ " + (fermTemp < 25 ? (isId ? "Terlalu Dingin" : "Too Cold") : (isId ? "Terlalu Panas" : "Too Hot"))}
-            </div>
-          </div>
+                {/* Condensation droplets on plastic */}
+                {[105,115,200,210,108,205].map((dx, i) => (
+                  <circle key={i} cx={dx} cy={90 + i * 12} r={1.5} fill="white" opacity="0.4"/>
+                ))}
 
-          {/* Timer */}
-          <div className="absolute top-3 right-3 text-right">
-            <div className="text-[12px] font-bold text-amber-700">{fermTime}h</div>
-            <div className="text-[8px] text-muted-foreground">{isId ? "Waktu Fermentasi" : "Ferm. Time"}</div>
-          </div>
+                {/* Fermentation bubbles */}
+                {calc.aroma > 20 && [148,158,168].map((bx, i) => (
+                  <circle key={i} cx={bx} cy={108 - i * 5} r={1.5 + i * 0.5}
+                    fill="#fde047" opacity={0.4 + i * 0.1}
+                    style={{ animation: `bounce ${1.5 + i * 0.4}s ease-in-out infinite alternate` }}
+                  />
+                ))}
 
-          {/* Acidity warning */}
-          {calc.acidity > 60 && (
-            <div className="absolute top-12 right-3 text-[9px] font-bold text-red-500 bg-red-50 border border-red-200 rounded-lg px-2 py-1">
-              ⚠️ {isId ? "Terlalu Asam!" : "Too Sour!"}
-            </div>
-          )}
+                <text x="160" y="185" textAnchor="middle" fontSize="8" fontWeight="bold" fill="#1d4ed8" fontFamily="sans-serif">
+             k ⚠️" : "🛍️ Tape Ketan — Plastic ⚠️"}
+                </text>
+              </g>
+            )}
 
-          {/* Yeast bloom particles */}
-          {calc.aroma > 40 && (
-            <div className="absolute top-16 left-1/2 -translate-x-1/2 flex gap-3">
-              {[1,2,3,4].map(i => (
-                <div key={i} className="w-2 h-2 rounded-full bg-yellow-300/60 animate-ping"
-                  style={{ animationDelay: `${i * 0.4}s` }} />
-              ))}
-            </div>
-          )}
-        </div>
+            {/* ── THERMOMETER (left) ── */}
+            <g transform="translate(18, 30)">
+              <rect x="0" y="0" width="12" height="80" rx="6" fill="#f1f5f9" stroke="#94a3b8" strokeWidth="1"/>
+              <rect x="2" y={80 - Math.round(((fermTemp - 15) / 30) * 70)}
+                width="8" height={Math.round(((fermTemp - 15) / 30) * 70)}
+                rx="4"
+                fill={fermTem"#ef4444" : fermTemp > 25 ? "#f97316" : "#3b82f6"}/>
+              <circle cx="6" cy="84" r="7"
+                fill={fermTemp > 35 ? "#ef4444" : fermTemp > 25 ? "#f97316" : "#3b82f6"}
+                stroke="#94a3b8" strokeWidth="1"/>
+              <text x="6" y="100" textAnchor="middle" fontSize="7" fontWeight="bold"
+                fill={fermTemp > 35 ? "#dc2626" : fermTemp > 25 ? "#ea580c" : "#2563eb"}
+                fontFamily="sans-serif">{fermTemp}°C</text>
+              <text x="6" y="110" textAnchor="middle" fontSize="6" fill="#64748b" fontFamily="sans-serif">
+                {calc.tempOptimal ? "✓ OK" : "⚠"}
+              </text>
+            </g>
+
+            {/* ── CLOCK / TIMER (right) ── */}
+            <g transform="translate(278, 30)">
+              <circle cx="12" cy="12" r="14" fill="white" stroke="#d97706" strokeWidth="1.5"/>
+              <circle cx="12" cy="12" r="1.5" fill="#92400e"/>
+              {/* Clock hands */}
+       eWidth="1.5" strokeLinecap="round"/>
+              <line x1="12" y1="12"
+                x2={12 + Math.cos((fermTime / 96 * 360 - 90) * Math.PI / 180) * 8}
+                y2={12 + Math.sin((fermTime / 96 * 360 - 90) * Math.PI / 180) * 8}
+                stroke="#d97706" strokeWidth="1.2" strokeLinecap="round"/>
+              <text x="12" y="36" textAnchor="middle" fontSize="7" fontWeight="bold" fill="#92400e" fontFamily="sans-serif">{fermTime}h</text>
+              <text x="12" y="45" textAnchor="middle" fontSize="6" fill="#64748b" fontFamily="sans-serif">
+                {isId ? "Waktu" : "Time"}
+              </text>
+            </g>
+
+            {/* ── FERMENTATION STAGE LABEL ── */}
+            <rect x="90" y="8" width="140" height="22" rx="11" fill="white" stroke="#d97706" strokeWidth="1" opacity="0.9"/>
+            <text x="160" y="23" textAnchor="middle" fontSize="8.5" fontWeight="bold"
+              fill={calc.sweetness > 60 ? "#16a34a" : calc.sweetness > 30 ? "#d97706" : "#64748b"}
+      "sans-serif">
+              {calc.sweetness > 60
+                ? (isId ? "🍯 Fermentasi Optimal!" : "🍯 Optimal Fermentation!")
+                : calc.sweetness > 30
+                ? (isId ? "⏳ Sedang Fermentasi..." : "⏳ Fermenting...")
+                : (isId ? "🌱 Awal Fermentasi" : "🌱 Early Stage")}
+            </text>
+          </svg>
+        </div>        fontFamily=       <line x1="12" y1="12" x2="12" y2="3" stroke="#92400e" strokp > 35 ?      {isId ? "🛍️ Tape Ketan — Plasti     fill=
 
         {/* Packaging selector */}
         <div className="flex gap-2 mt-3">
